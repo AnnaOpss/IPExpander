@@ -11,7 +11,6 @@ var inip = flag.String("ip", "192.168.1.0/24", "The IP address and submask, CIDR
 
 func main() {
 	flag.Parse()
-	//TODO implementare controllo IP formato correttamente.
 
 	ip, ipnet, err := net.ParseCIDR(*inip)
 	if err != nil {
