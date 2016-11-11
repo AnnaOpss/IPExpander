@@ -1,24 +1,30 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net"
+	"os"
 )
 
-var inip = flag.String("ip", "192.168.1.0/24", "The IP address and submask, CIDR notation")
-
 func main() {
-	flag.Parse()
+	ipranges := os.Args[1:]
 
-	ip, ipnet, err := net.ParseCIDR(*inip)
-	if err != nil {
-		log.Fatal(err)
+	if len(ipranges) == 0 {
+		printHelp()
+		return
 	}
 
-	for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
-		fmt.Println(ip)
+	for _, iprange := range ipranges {
+		fmt.Fprintln(os.Stderr, "Now printing "+iprange)
+		ip, ipnet, err := net.ParseCIDR(iprange)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for ip := ip.Mask(ipnet.Mask); ipnet.Contains(ip); inc(ip) {
+			fmt.Println(ip)
+		}
 	}
 }
 
@@ -29,4 +35,8 @@ func inc(ip net.IP) {
 			break
 		}
 	}
+}
+
+func printHelp() {
+	fmt.Println("Please provide at least an ip range in Classless inter-domain routing (CIDR) form")
 }
