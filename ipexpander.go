@@ -62,6 +62,9 @@ func inc(ip net.IP) {
 //This is the single fucking most unexpectedly complex piece of garbage I have ever written
 func parseDashed(in string) ([]net.IP, error) {
 	sections := strings.Split(in, ".")
+	if len(sections) != 4 {
+		return nil, errors.New("Not a valid IP range. There should only be 3 dots.")
+	}
 	//An array of slices!
 	var ranges [4][]byte
 	//This label allows the flow to jump out of the switch below
